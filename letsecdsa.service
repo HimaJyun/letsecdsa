@@ -1,0 +1,7 @@
+[Unit]
+Description=Let's Encrypt ECDSA certificate
+After=network.target local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/letsecdsa/letsecdsa.sh /usr/local/bin/letsecdsa/letsecdsa.conf

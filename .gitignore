@@ -1,0 +1,16 @@
+*.conf
+!example.conf
+
+*.service
+*.timer
+!letsecdsa.service
+!letsecdsa.timer
+
+### OS ###
+Thumbs.db
+.DS_Store
+
+# Windows shortcuts
+*.lnk
+# Folder config file
+Desktop.ini
