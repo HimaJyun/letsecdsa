@@ -112,26 +112,27 @@ fi
 : "Move keys and Symlink update" && {
 	mkdir -pv "${DEST_PATH}/archive"
 	mkdir -pv "${DEST_PATH}/live"
-	# get version
-	version=$(echo "${DEST_PATH}/archive/*" | xargs -n1 basename | grep -o "[0-9]*" | sort -nr | head -1)
-	version=$((${version-0}+1))
+	# get generation
+	generation=$(find "${DEST_PATH}/archive/" -maxdepth 1 -type f -print0 | xargs -0 -n1 basename | grep -o "[0-9]*" | sort -nr | head -1)
+	echo "Current generation: ${generation}"
+	generation=$((${generation-0}+1))
 
 	# Move keys.
-	mv -v ./0000_cert.pem "${DEST_PATH}/archive/cert${version}.pem"
-	mv -v ./0000_chain.pem "${DEST_PATH}/archive/chain${version}.pem"
-	mv -v ./0001_chain.pem "${DEST_PATH}/archive/fullchain${version}.pem"
-	mv -v ./privkey.pem "${DEST_PATH}/archive/privkey${version}.pem"
-	chmod -v 600 "${DEST_PATH}/archive/cert${version}.pem"
-	chmod -v 600 "${DEST_PATH}/archive/chain${version}.pem"
-	chmod -v 600 "${DEST_PATH}/archive/fullchain${version}.pem"
-	chmod -v 600 "${DEST_PATH}/archive/privkey${version}.pem"
+	mv -v ./0000_cert.pem "${DEST_PATH}/archive/cert${generation}.pem"
+	mv -v ./0000_chain.pem "${DEST_PATH}/archive/chain${generation}.pem"
+	mv -v ./0001_chain.pem "${DEST_PATH}/archive/fullchain${generation}.pem"
+	mv -v ./privkey.pem "${DEST_PATH}/archive/privkey${generation}.pem"
+	chmod -v 600 "${DEST_PATH}/archive/cert${generation}.pem"
+	chmod -v 600 "${DEST_PATH}/archive/chain${generation}.pem"
+	chmod -v 600 "${DEST_PATH}/archive/fullchain${generation}.pem"
+	chmod -v 600 "${DEST_PATH}/archive/privkey${generation}.pem"
 
 	# Update symlink
-	find "${DEST_PATH}/live" -mindepth 1 -type l -print0 | xargs -0 -n1 unlink
-	ln -vs "${DEST_PATH}/archive/cert${version}.pem" "${DEST_PATH}/live/cert.pem"
-	ln -vs "${DEST_PATH}/archive/chain${version}.pem" "${DEST_PATH}/live/chain.pem"
-	ln -vs "${DEST_PATH}/archive/fullchain${version}.pem" "${DEST_PATH}/live/fullchain.pem"
-	ln -vs "${DEST_PATH}/archive/privkey${version}.pem" "${DEST_PATH}/live/privkey.pem"
+	find "${DEST_PATH}/live" -maxdepth 1 -type l -print0 | xargs -0 -n1 unlink
+	ln -vs "${DEST_PATH}/archive/cert${generation}.pem" "${DEST_PATH}/live/cert.pem"
+	ln -vs "${DEST_PATH}/archive/chain${generation}.pem" "${DEST_PATH}/live/chain.pem"
+	ln -vs "${DEST_PATH}/archive/fullchain${generation}.pem" "${DEST_PATH}/live/fullchain.pem"
+	ln -vs "${DEST_PATH}/archive/privkey${generation}.pem" "${DEST_PATH}/live/privkey.pem"
 }
 
 : "Reload web server" && test -n "${RELOAD_COMMAND[*]-}" && {
