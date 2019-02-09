@@ -113,7 +113,7 @@ fi
 	mkdir -pv "${DEST_PATH}/archive"
 	mkdir -pv "${DEST_PATH}/live"
 	# get generation
-	generation=$(find "${DEST_PATH}/archive/" -maxdepth 1 -type f -print0 | xargs -0 -n1 basename | grep -o "[0-9]*" | sort -nr | head -1)
+	generation=$(find "${DEST_PATH}/archive/" -mindepth 1 -maxdepth 1 -type f -print0 | xargs -0 -n1 basename | grep -o "[0-9]*" | sort -nr | head -1)
 	echo "Current generation: ${generation}"
 	generation=$((${generation-0}+1))
 
@@ -128,7 +128,7 @@ fi
 	chmod -v 600 "${DEST_PATH}/archive/privkey${generation}.pem"
 
 	# Update symlink
-	find "${DEST_PATH}/live" -maxdepth 1 -type l -print0 | xargs -0 -n1 unlink
+	find "${DEST_PATH}/live" -mindepth 1 -maxdepth 1 -type l -print0 | xargs -0 -n1 unlink
 	ln -vs "${DEST_PATH}/archive/cert${generation}.pem" "${DEST_PATH}/live/cert.pem"
 	ln -vs "${DEST_PATH}/archive/chain${generation}.pem" "${DEST_PATH}/live/chain.pem"
 	ln -vs "${DEST_PATH}/archive/fullchain${generation}.pem" "${DEST_PATH}/live/fullchain.pem"
